@@ -5,24 +5,9 @@
  * Payment Gateway modules allow you to integrate payment solutions with the
  * WHMCS platform.
  *
- * This sample file demonstrates how a payment gateway module for WHMCS should
- * be structured and all supported functionality it can contain.
- *
- * Within the module itself, all functions must be prefixed with the module
- * filename, followed by an underscore, and then the function name. For this
- * example file, the filename is "gatewaymodule" and therefore all functions
- * begin "gatewaymodule_".
- *
- * If your module or third party API does not support a given function, you
- * should not define that function within your module. Only the _config
- * function is required.
- *
  * For more information, please refer to the online documentation.
  *
- * @see https://developers.whmcs.com/payment-gateways/
- *
- * @copyright Copyright (c) WHMCS Limited 2017
- * @license http://www.whmcs.com/license/ WHMCS Eula
+ * @copyright Stefano Fabi - https://github.com/stefanofabi
  */
 
 if (!defined("WHMCS")) {
@@ -32,17 +17,12 @@ if (!defined("WHMCS")) {
 /**
  * Define module related meta data.
  *
- * Values returned here are used to determine module related capabilities and
- * settings.
- *
- * @see https://developers.whmcs.com/payment-gateways/meta-data-params/
- *
  * @return array
  */
-function mercadopago_MetaData()
+function whmcs_mercadopago_MetaData()
 {
     return array(
-        'DisplayName' => 'MercadoPago',
+        'DisplayName' => 'WHMCS MercadoPago',
         'APIVersion' => '1.1', // Use API Version 1.1
         'DisableLocalCreditCardInput' => true,
         'TokenisedStorage' => false,
@@ -52,24 +32,9 @@ function mercadopago_MetaData()
 /**
  * Define gateway configuration options.
  *
- * The fields you define here determine the configuration options that are
- * presented to administrator users when activating and configuring your
- * payment gateway module for use.
- *
- * Supported field types include:
- * * text
- * * password
- * * yesno
- * * dropdown
- * * radio
- * * textarea
- *
- * Examples of each field type and their possible configuration parameters are
- * provided in the sample function below.
- *
  * @return array
  */
-function mercadopago_config()
+function  whmcs_mercadopago_config()
 {
     return array(
         // the friendly display name for a payment gateway should be
@@ -121,18 +86,9 @@ function mercadopago_config()
 /**
  * Payment link.
  *
- * Required by third party payment gateway modules only.
- *
- * Defines the HTML output displayed on an invoice. Typically consists of an
- * HTML form that will take the user to the payment gateway endpoint.
- *
- * @param array $params Payment Gateway Module Parameters
- *
- * @see https://developers.whmcs.com/payment-gateways/third-party-gateway/
- *
  * @return string
  */
-function mercadopago_link($params)
+function whmcs_mercadopago_link($params)
 {
     if (empty($params['AccessToken'])) 
         return "Access Token no cargado";
@@ -170,7 +126,7 @@ function mercadopago_link($params)
                 "title" => "Pago Factura Nro. #$invoiceId",
                 "quantity" => 1,
                 "currency_id" => $currencyCode,
-                "unit_price" => intval($amount)
+                "unit_price" => floatval($amount)
             ]
         ],
         "payer" => [
@@ -210,15 +166,9 @@ function mercadopago_link($params)
 /**
  * Refund transaction.
  *
- * Called when a refund is requested for a previously successful transaction.
- *
- * @param array $params Payment Gateway Module Parameters
- *
- * @see https://developers.whmcs.com/payment-gateways/refunds/
- *
  * @return array Transaction response status
  */
-function mercadopago_refund($params)
+function whmcs_mercadopago_refund($params)
 {
     
 }
@@ -226,17 +176,9 @@ function mercadopago_refund($params)
 /**
  * Cancel subscription.
  *
- * If the payment gateway creates subscriptions and stores the subscription
- * ID in tblhosting.subscriptionid, this function is called upon cancellation
- * or request by an admin user.
- *
- * @param array $params Payment Gateway Module Parameters
- *
- * @see https://developers.whmcs.com/payment-gateways/subscription-management/
- *
  * @return array Transaction response status
  */
-function mercadopago_cancelSubscription($params)
+function whmcs_mercadopago_cancelSubscription($params)
 {
 
 }
