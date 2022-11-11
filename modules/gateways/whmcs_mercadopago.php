@@ -80,6 +80,16 @@ function  whmcs_mercadopago_config()
             'Type' => 'text',
             'Size' => '255',
         ),
+        'SandboxMode' => array(
+            'FriendlyName' => 'Modo de prueba',
+            'Type' => 'yesno',
+            'Description' => 'Tilda para activar el modo sandbox',
+        ),
+        'Bitacora' => array(
+            'FriendlyName' => 'Activar bitacora',
+            'Type' => 'yesno',
+            'Description' => 'Tilda para guardar un registro del webhook',
+        ),
     );
 }
 
@@ -110,7 +120,8 @@ function whmcs_mercadopago_link($params)
     $systemUrl = $params['systemurl'];
     $returnUrl = $params['returnurl'];
     $langPayNow = $params['langpaynow'];
-    
+    $moduleName = $params['paymentmethod'];
+
     $url = "https://api.mercadopago.com/checkout/preferences/";
     $ch = curl_init($url);
     
@@ -140,8 +151,9 @@ function whmcs_mercadopago_link($params)
             "failure" => empty($params['BackURL_Failure']) ? $returnUrl : $params['BackURL_Failure'],
         ],
         "external_reference" => $params['Prefix']."".$invoiceId,
+        "notification_url" => $systemUrl . 'modules/gateways/callback/' . $moduleName . '.php?source_news=webhooks',
     ];
-
+    
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
         "Authorization: Bearer ".$accesstoken,
@@ -153,10 +165,16 @@ function whmcs_mercadopago_link($params)
     $response = curl_exec($ch);
     curl_close($ch);
     $response = json_decode($response);
+
+    if ($params['SandboxMode']) {
+        $checkoutUrl = $response->sandbox_init_point;
+    } else {
+        $checkoutUrl = $response->init_point;
+    }
     
     $htmlOutput = '<img src="'.$systemUrl.'mercadopago-logo.png"> <br />';
     $htmlOutput .= empty($params['PaymentText']) ? "" : $params['PaymentText']." <br /> <br />";
-    $htmlOutput .= '<a class="btn btn-success" href="' . $response->init_point . '">';
+    $htmlOutput .= '<a class="btn btn-success" href="' . $checkoutUrl . '">';
     $htmlOutput .= $langPayNow;
     $htmlOutput .= '</a>';
     

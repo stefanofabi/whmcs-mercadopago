@@ -11,7 +11,3 @@ WHMCS 8
 3. Buscar el módulo con el nombre "WHMCS MercadoPago"
 4. Activar el modulo y clickear en "Administrar"
 5. Colocar el Access Token en la configuración del módulo, de lo contrario no funciona.
-
-Únicamente probado con MercadoPago Argentina. No se conoce su funcionamiento en otros países. 
-
-Muy pronto las notificaciones de pagos.
